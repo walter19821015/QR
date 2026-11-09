@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
-  <script src="https://res.zvo.cn/translate/translate.js"></script>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -138,6 +137,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 @keyframes borderShift{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
 @keyframes btnPulse{from{box-shadow:0 0 8px var(--accent)}to{box-shadow:0 0 24px #ec4899,0 0 48px #8b5cf6}}
 </style>
+  <script src="https://res.zvo.cn/translate/translate.js"></script>
 </head>
 <body>
 <div class="shell">
@@ -912,46 +912,23 @@ console.log('%c🎨 QR Studio %cby deadboy18','font-size:20px;font-weight:bold;c
 console.log('%c🥚 Psst... hidden easter eggs!','font-size:12px;color:#f59e0b;font-style:italic;');
 console.log('%c  ⬆⬆⬇⬇⬅➡⬅➡🅱🅰  %cKonami → 🎉\n%c  📱 Triple-tap title   %c→ 🌈 Party\n%c  📱 Shake phone        %c→ 🎊 Confetti\n%c  ⌨️  "matrix" in URL   %c→ 💊 Red pill','color:#22c55e;font-family:monospace;font-size:11px;','color:#a1a1aa;font-size:11px;','color:#22c55e;font-family:monospace;font-size:11px;','color:#a1a1aa;font-size:11px;','color:#22c55e;font-family:monospace;font-size:11px;','color:#a1a1aa;font-size:11px;','color:#22c55e;font-family:monospace;font-size:11px;','color:#a1a1aa;font-size:11px;');
 </script>
-<!-- === 1. 锁死顶栏固定在顶部，并强制左右两侧严格垂直居中 === -->
+  <!-- === 1. 悬浮导航与胶囊按钮样式 === -->
 <style>
-  /* 让整个顶栏变成粘性固定，页面怎么滚都绝对不动 */
-  header {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 99999 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    height: 56px !important;
-    box-sizing: border-box !important;
-    padding: 0 24px !important;
-    background: #ffffff !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-  }
-
-  /* 左侧文字垂直对齐 */
-  header .brand {
-    display: flex !important;
-    align-items: center !important;
-    margin: 0 !important;
-    line-height: 1 !important;
-  }
-
-  /* 右侧按钮容器垂直绝对居中 */
-  #lang-dropdown-wrapper {
-    display: flex !important;
+  #app-lang-home-nav {
+    position: fixed !important;
+    top: 16px !important;
+    right: 20px !important;
+    z-index: 2147483647 !important;
+    display: inline-flex !important;
     align-items: center !important;
     gap: 8px !important;
-    height: 100% !important;
-    margin: 0 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   }
-
-  /* 按钮尺寸与左侧对齐，消除任何上下下沉偏差 */
   .nav-header-btn {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 4px !important;
+    gap: 5px !important;
     height: 32px !important;
     padding: 0 12px !important;
     background: rgba(255, 255, 255, 0.9) !important;
@@ -962,13 +939,18 @@ console.log('%c  ⬆⬆⬇⬇⬅➡⬅➡🅱🅰  %cKonami → 🎉\n%c  📱 T
     color: #1f2937 !important;
     text-decoration: none !important;
     cursor: pointer !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+    backdrop-filter: blur(8px) !important;
     box-sizing: border-box !important;
     line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+  .nav-header-btn:hover {
+    background: #ffffff !important;
   }
 </style>
 
-<!-- === 2. 挂载到 header 内部的组件脚本 === -->
+<!-- === 2. 挂载与原生英文翻译驱动 === -->
 <script>
   (function() {
     function initTranslate() {
@@ -977,46 +959,41 @@ console.log('%c  ⬆⬆⬇⬇⬅➡⬅➡🅱🅰  %cKonami → 🎉\n%c  📱 T
         return;
       }
 
-      // 核心关键：告诉内核本网页的底色母语是英语
+      // 声明原生母语为英语
       translate.language.setLocal('english');
       translate.selectLanguageTag.show = false;
       translate.service.use('client.edge');
-      // 开启动态渲染监听（支持 Vue/React 动态生成的文字）
       if (translate.listener) {
         translate.listener.start();
       }
       translate.execute();
 
-      if (document.getElementById('lang-dropdown-wrapper')) return;
-
-      const header = document.querySelector('header');
-      if (!header) {
-        setTimeout(initTranslate, 50);
-        return;
-      }
+      if (document.getElementById('app-lang-home-nav')) return;
 
       const wrapper = document.createElement('div');
-      wrapper.id = 'lang-dropdown-wrapper';
+      wrapper.id = 'app-lang-home-nav';
+      wrapper.className = 'notranslate';
       wrapper.innerHTML = `
-        <a href="https://walter19821015.ccwu.cc" class="nav-header-btn">
+        <a href="https://walter19821015.ccwu.cc" class="nav-header-btn notranslate">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-          <span>首页</span>
+          <span>Home</span>
         </a>
-        <div style="position:relative;display:flex;align-items:center;height:100%;">
-          <button id="langMenuBtn" type="button" class="nav-header-btn">
-            <span>🌐 语言</span>
+        <div style="position:relative;display:inline-flex;align-items:center;" class="notranslate">
+          <button id="langMenuBtn" type="button" class="nav-header-btn notranslate">
+            <span>🌐 Language</span>
             <span style="font-size:10px;opacity:0.7;">▼</span>
           </button>
-          <div id="langMenu" style="display:none;position:absolute;right:0;top:calc(100% + 4px);width:120px;background:#ffffff;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,0.12);border:1px solid #e5e7eb;overflow:hidden;z-index:999999;padding:4px 0;">
-            <a href="javascript:translate.changeLanguage('english');" style="display:block;padding:8px 14px;color:#374151;font-size:13px;text-decoration:none;">English</a>
-            <a href="javascript:translate.changeLanguage('chinese_simplified');" style="display:block;padding:8px 14px;color:#374151;font-size:13px;text-decoration:none;">简体中文</a>
-            <a href="javascript:translate.changeLanguage('spanish');" style="display:block;padding:8px 14px;color:#374151;font-size:13px;text-decoration:none;">Español</a>
-            <a href="javascript:translate.changeLanguage('arabic');" style="display:block;padding:8px 14px;color:#374151;font-size:13px;text-decoration:none;">العربية</a>
+          <div id="langMenu" class="notranslate" style="display:none;position:absolute;right:0;top:calc(100% + 4px);width:120px;background:#ffffff;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,0.2);border:1px solid #e5e7eb;overflow:hidden;z-index:2147483647;padding:4px 0;">
+            <a href="javascript:translate.changeLanguage('english');" class="notranslate" style="display:block;padding:8px 14px;color:#374151;font-size:13px;text-decoration:none;">English</a>
+            <a href="javascript:translate.changeLanguage('chinese_simplified');" class="notranslate" style="display:block;padding:8px 14px;color:#374151;font-size:13px;text-decoration:none;">简体中文</a>
+            <a href="javascript:translate.changeLanguage('spanish');" class="notranslate" style="display:block;padding:8px 14px;color:#374151;font-size:13px;text-decoration:none;">Español</a>
+            <a href="javascript:translate.changeLanguage('arabic');" class="notranslate" style="display:block;padding:8px 14px;color:#374151;font-size:13px;text-decoration:none;">العربية</a>
           </div>
         </div>
       `;
 
-      header.appendChild(wrapper);
+      // 直接挂载到 body，不依赖特定 header 标签，100% 显示
+      document.body.appendChild(wrapper);
 
       const btn = document.getElementById('langMenuBtn');
       const menu = document.getElementById('langMenu');
